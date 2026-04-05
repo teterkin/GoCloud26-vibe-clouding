@@ -176,7 +176,7 @@ modules/
 Создай полную инфраструктуру для квиз-приложения:
 
 Terraform:
-- 2 ВМ в разных зонах (test и prod)
+- 2 ВМ (test и prod) в одной зоне AZ-1
 - Общий VPC
 - Security groups
 - Outputs: IP адреса

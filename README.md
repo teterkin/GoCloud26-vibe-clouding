@@ -41,9 +41,7 @@ test VM (AZ-1)          prod VM (AZ-1)
 │  :5000      │         │  :5000      │
 └──────┬──────┘         └──────┬──────┘
        │                       │
-       └───────────┬───────────┘
-                   │
-              External IP
+  <TEST_IP>              <PROD_IP>
 
 
 Git Repository

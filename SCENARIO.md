@@ -165,15 +165,42 @@ terraform output external_ip
 # Переключаемся на main
 git checkout main
 
-# Создаём ветку для изменения цветов test
+# Создаём ветку для изменения цветов (или используем существующую)
 git checkout -b feature/change-test-colors
+
+# Если ветка уже существует:
+# git checkout feature/change-test-colors
 ```
 
 **Шаг 3: Меняем цвет в HTML-файлах**
+
+Цвета задаются в CSS переменных в каждом шаблоне. Основные файлы:
+- `quiz-app/templates/index.html` — главная страница
+- `quiz-app/templates/quiz.html` — страница вопроса
+- `quiz-app/templates/answer.html` — результат ответа
+- `quiz-app/templates/result.html` — итоговый результат
+
+В каждом файле есть блок `.env-badge` с цветами:
+```css
+{% if app_env == 'prod' %}
+background: #B91C1C;  /* красный для PROD */
+color: #FFFFFF;
+{% else %}
+background: #1D4ED8;  /* синий для TEST */
+color: #FFFFFF;
+{% endif %}
+```
+
+Также градиент body можно изменить:
+- Зелёный: `#11998e → #38ef7d`
+- Фиолетовый: `#667eea → #764ba2`
+- Тёмно-красный: `#1a1a2e → #16213e`
+
 ```bash
-# Открываем файл и меняем цвета
+# Пример: меняем на фиолетовый
 vim quiz-app/templates/index.html
-# Меняем #11998e → #667eea (фиолетовый)
+# Найти: background: linear-gradient(135deg, #11998e
+# Заменить на: background: linear-gradient(135deg, #667eea
 ```
 
 **Шаг 4: Смотрим diff — видим что изменилось**

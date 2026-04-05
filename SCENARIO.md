@@ -147,9 +147,18 @@ ansible-playbook -i "${PROD_IP}," ansible/playbook.yml \
 
 #### Workflow:
 
+**На воркшопе (упрощённо):**
 ```
 1. Создаём branch    → feature/change-test-colors
-2. Изменяем код      → ansible playbook
+2. Меняем CSS        → quiz-app/static/style.css
+3. Git commit        → локально
+4. Ansible деплой    → только в test
+```
+
+**В реальной жизни:**
+```
+1. Создаём branch    → feature/change-test-colors
+2. Меняем код        → quiz-app/static/style.css
 3. Git commit + push → Review в PR
 4. Merge             → CI/CD деплоит в prod
 ```

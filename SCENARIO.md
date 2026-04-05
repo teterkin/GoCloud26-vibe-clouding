@@ -160,7 +160,9 @@ ansible-playbook -i "${PROD_IP}," ansible/playbook.yml \
 1. Создаём branch    → feature/change-test-colors
 2. Меняем код        → quiz-app/static/style.css
 3. Git commit + push → Review в PR
-4. Merge             → CI/CD деплоит в prod
+4. Merge             → CI/CD деплоит в test
+5. Проверка         → тестирование в test
+6. CI/CD деплой     → в prod
 ```
 
 #### Различия test и prod:

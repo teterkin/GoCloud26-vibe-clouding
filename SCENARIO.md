@@ -120,6 +120,11 @@ terraform workspace select prod # переключиться на prod
 
 > **⚠️ ВАЖНО:** После создания ВМ Ubuntu выполняет полное обновление дистрибутива. Это занимает **3-5 минут**! Прежде чем подключаться по SSH и устанавливать пакеты через Ansible, обязательно дождитесь завершения обновления.
 
+> **Опционально:** для генерации `inventory.ini` можно использовать скрипт:
+> ```bash
+> scripts/generate-inventory.sh ~/.ssh/id_ed25519
+> ```
+
 ```bash
 # Переключаемся на test и проверяем
 terraform workspace select test
@@ -358,6 +363,9 @@ terraform workspace new test
 terraform apply -var-file="secrets.tfvars" -var-file="test.tfvars"
 terraform workspace new prod
 terraform apply -var-file="secrets.tfvars" -var-file="prod.tfvars"
+
+# Опционально: генерация inventory.ini
+# scripts/generate-inventory.sh ~/.ssh/id_ed25519
 
 # 3. Деплой в test
 terraform workspace select test

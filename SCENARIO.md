@@ -299,52 +299,6 @@ ansible-playbook -i "${TEST_VM_IP}," ansible/playbook.yml \
 
 ---
 
-## Часть 4: Полный цикл (5 минут)
-
-> **Что такое workspaces:** Изолированные состояния (tfstate) для разных окружений. Один код — разные ВМ. State хранится локально в директории `terraform.tfstate.d/` (test/ и prod/ поддиректории).
-
-### Запуск всех команд
-
-```bash
-# 1. Создаём обе ВМ
-terraform workspace new test
-terraform apply -var-file="secrets.tfvars" -var-file="test.tfvars"
-
-terraform workspace new prod
-terraform apply -var-file="secrets.tfvars" -var-file="prod.tfvars"
-
-# 2. Получаем IP адреса
-
-# test
-terraform workspace select test
-terraform workspace show  # проверить: test
-terraform output external_ip
-TEST_IP=$(terraform output -raw external_ip)
-
-# prod
-terraform workspace select prod
-terraform workspace show  # проверить: prod
-terraform output external_ip
-PROD_IP=$(terraform output -raw external_ip)
-
-# 3. Деплой в test
-ansible-playbook -i "${TEST_IP}," ansible/playbook.yml \
-  -u ubuntu --private-key ~/.ssh/id_ed25519 -e app_environment=test
-
-# 4. Деплой в prod
-ansible-playbook -i "${PROD_IP}," ansible/playbook.yml \
-  -u ubuntu --private-key ~/.ssh/id_ed25519 -e app_environment=prod
-```
-
-### Результат
-
-- **test ВМ**: http://<test_ip>:5000 — фиолетовый квиз
-- **prod ВМ**: http://<prod_ip>:5000 — тёмно-красный квиз
-
-Визуально различимы!
-
----
-
 ## Завершение (3 минуты)
 
 ### Итоги

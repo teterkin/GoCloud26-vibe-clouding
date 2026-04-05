@@ -330,31 +330,37 @@ ansible-playbook -i "${TEST_VM_IP}," ansible/playbook.yml \
 
 ### A. Команды для быстрого старта
 
-> **Что такое workspaces:** Изолированные состояния (tfstate) для разных окружений. Один код — разные ВМ. State хранится локально в директории `terraform.tfstate.d/` (test/ и prod/ поддиректории).
-
 ```bash
-# Клонирование репозитория
-git clone https://github.com:teterkin/GoCloud26-vibe-clouding.git
-cd GoCloud26-vibe-clouding
-
-# Настройка
+# 1. Подготовка
+git clone <REPO_URL>
+cd <REPO_NAME>
 cp secrets.tfvars.example secrets.tfvars
-# Редактирование secrets.tfvars
+# 编辑 secrets.tfvars: project_id, auth_key_id, auth_secret
 
-# Создание инфраструктуры
+# 2. Terraform
 terraform init
 terraform workspace new test
 terraform apply -var-file="secrets.tfvars" -var-file="test.tfvars"
+terraform workspace new prod
+terraform apply -var-file="secrets.tfvars" -var-file="prod.tfvars"
 
-# Деплой приложения
+# 3. Деплой в test
+terraform workspace select test
 terraform workspace show  # проверить: test
-terraform output external_ip
 TEST_IP=$(terraform output -raw external_ip)
 ansible-playbook -i "${TEST_IP}," ansible/playbook.yml \
   -u ubuntu --private-key ~/.ssh/id_ed25519 -e app_environment=test
 
-# Проверка
-open http://${TEST_IP}:5000
+# 4. Деплой в prod
+terraform workspace select prod
+terraform workspace show  # проверить: prod
+PROD_IP=$(terraform output -raw external_ip)
+ansible-playbook -i "${PROD_IP}," ansible/playbook.yml \
+  -u ubuntu --private-key ~/.ssh/id_ed25519 -e app_environment=prod
+
+# 5. Проверка
+open http://${TEST_IP}:5000  # test
+open http://${PROD_IP}:5000  # prod
 ```
 
 ### B. Troubleshooting

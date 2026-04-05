@@ -39,7 +39,7 @@
 1. Добавь переменную environment со значением по умолчанию "test"
 2. Создай два файла tfvars:
    - test.tfvars: flavor = "gen-1-1", vm_name = "quiz-test"
-   - prod.tfvars: flavor = "gen-2-2", vm_name = "quiz-prod"
+   - prod.tfvars: flavor = "gen-1-1", vm_name = "quiz-prod"
 3. Используй имена ресурсов с префиксом environment: "${var.environment}-quiz-vm"
 4. Настрой разные зоны доступности:
    - test: ru.AZ-1

@@ -8,13 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            {% if app_env == 'prod' %}
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            {% elif app_env == 'test' %}
             background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            {% else %}
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            {% endif %}
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -64,13 +58,7 @@
         .explanation h4 { color: #333; margin-bottom: 10px; }
         .explanation p { color: #666; line-height: 1.6; }
         .btn {
-            {% if app_env == 'prod' %}
-            background: linear-gradient(135deg, #0f3460 0%, #e94560 100%);
-            {% elif app_env == 'test' %}
             background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            {% else %}
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            {% endif %}
             color: white;
             border: none;
             padding: 15px 40px;

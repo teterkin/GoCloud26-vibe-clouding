@@ -134,9 +134,79 @@ terraform workspace select prod # переключиться на prod
 
 | Параметр | test | prod |
 |----------|------|------|
-| Цвета | Фиолетовые (#667eea) | Тёмные (#1a1a2e + #e94560) |
-| Environment | test | prod |
+| Цвета (одинаковые) | Зелёные (#11998e) | Зелёные (#11998e) |
 | Flavor | gen-1-1 (1 vCPU, 1 GB RAM) | gen-1-1 (1 vCPU, 1 GB RAM) |
+
+### Как открыть приложение
+
+После деплоя откройте в браузере:
+- **test**: `http://<TEST_VM_IP>:5000`
+- **prod**: `http://<PROD_VM_IP>:5000`
+
+IP ВМ можно получить:
+```bash
+terraform workspace select test
+terraform output external_ip
+
+terraform workspace select prod  
+terraform output external_ip
+```
+
+### Демонстрация: GitOps — изменение только test
+
+Покажем главное преимущество GitOps — **изолированные изменения**:
+
+**Шаг 1: Изначально цвета одинаковые**
+- test: зелёные (#11998e → #38ef7d)
+- prod: зелёные (#11998e → #38ef7d)
+
+**Шаг 2: Создаём ветку для изменения test**
+```bash
+# Переключаемся на main
+git checkout main
+
+# Создаём ветку для изменения цветов test
+git checkout -b feature/change-test-colors
+```
+
+**Шаг 3: Меняем цвет в HTML-файлах**
+```bash
+# Открываем файл и меняем цвета
+vim quiz-app/templates/index.html
+# Меняем #11998e → #667eea (фиолетовый)
+```
+
+**Шаг 4: Смотрим diff — видим что изменилось**
+```bash
+# Показать изменения в файлах
+git diff
+
+# Показать изменения конкретного файла
+git diff quiz-app/templates/index.html
+```
+
+**Шаг 5: Коммитим изменения**
+```bash
+git add quiz-app/templates/
+git commit -m "Change test colors to purple"
+```
+
+**Шаг 6: Деплоим только в test (prod не трогаем)**
+```bash
+# Важно: сначала проверим текущий workspace!
+terraform workspace show
+
+# Деплоим в test
+ansible-playbook -i "TEST_VM_IP," ansible/playbook.yml \
+  -u ubuntu --private-key ~/.ssh/id_ed25519 \
+  -e app_environment=test
+```
+
+**Шаг 7: Проверяем результат**
+- **test**: изменился на фиолетовый (#667eea)
+- **prod**: остался зелёным (#11998e) — без изменений
+
+Откройте оба URL в браузере — видим разницу! Это и есть GitOps в действии.
 
 ### Как это работает
 

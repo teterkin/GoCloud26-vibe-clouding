@@ -28,10 +28,10 @@ terraform workspace select "$ORIGINAL_WORKSPACE" > /dev/null 2>&1
 # Создаём inventory.ini
 cat > ansible/inventory.ini << EOF
 [test]
-test ansible_host=${TEST_IP} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY}
+test-vm ansible_host=${TEST_IP} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY}
 
 [prod]
-prod ansible_host=${PROD_IP} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY}
+prod-vm ansible_host=${PROD_IP} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY}
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3

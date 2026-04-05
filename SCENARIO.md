@@ -106,17 +106,31 @@ terraform workspace select prod # переключиться на prod
 > **⚠️ ВАЖНО:** После создания ВМ Ubuntu выполняет полное обновление дистрибутива. Это занимает **3-5 минут**! Прежде чем подключаться по SSH и устанавливать пакеты через Ansible, обязательно дождитесь завершения обновления.
 
 ```bash
-# Получаем IP test VM
+# Переключаемся на test и проверяем
 terraform workspace select test
+terraform workspace show  # должно показать: test
+
+# Получаем IP test VM
+terraform output external_ip  # проверим, что это test
+
+# Сохраняем IP в переменную
 TEST_IP=$(terraform output -raw external_ip)
 
 # Деплой в test
 ansible-playbook -i "${TEST_IP}," ansible/playbook.yml \
   -u ubuntu --private-key ~/.ssh/id_ed25519 \
   -e app_environment=test
+```
+
+```bash
+# Переключаемся на prod и проверяем
+terraform workspace select prod
+terraform workspace show  # должно показать: prod
 
 # Получаем IP prod VM
-terraform workspace select prod
+terraform output external_ip  # проверим, что это prod
+
+# Сохраняем IP в переменную
 PROD_IP=$(terraform output -raw external_ip)
 
 # Деплой в prod
@@ -271,7 +285,7 @@ ansible-playbook -i "${TEST_VM_IP}," ansible/playbook.yml \
    
    Это статические цвета — одинаковые для test и prod.
 
-2. **В HTML шаблонах** — цвета badge с надписью TEST/PROD:
+2. **В HTML шаблонах** — цвета badge (плашки) с надписью TEST/PROD:
    - TEST: синий фон (#1D4ED8), белый текст
    - PROD: красный фон (#B91C1C), белый текст
    
@@ -280,8 +294,8 @@ ansible-playbook -i "${TEST_VM_IP}," ansible/playbook.yml \
 **Workflow:**
 1. Ansible получает `app_environment` из переменной
 2. Передаёт в Flask через переменную окружения `APP_ENV`
-3. Flask рендерит шаблоны с `app_env` → badge показывает TEST или PROD
-4. CSS стили применяются ко всем окружениям одинаково (пока не изменить)
+3. Flask рендерит шаблоны с `app_env` →  badge: TEST или PROD
+4. Общие CSS стили применяются ко всем окружениям одинаково
 
 ---
 
@@ -300,16 +314,26 @@ terraform workspace new prod
 terraform apply -var-file="secrets.tfvars" -var-file="prod.tfvars"
 
 # 2. Получаем IP адреса
-TEST_IP=$(terraform workspace show test && terraform output -raw external_ip)
-PROD_IP=$(terraform workspace show prod && terraform output -raw external_ip)
+
+# test
+terraform workspace select test
+terraform workspace show  # проверить: test
+terraform output external_ip
+TEST_IP=$(terraform output -raw external_ip)
+
+# prod
+terraform workspace select prod
+terraform workspace show  # проверить: prod
+terraform output external_ip
+PROD_IP=$(terraform output -raw external_ip)
 
 # 3. Деплой в test
 ansible-playbook -i "${TEST_IP}," ansible/playbook.yml \
-  -u ubuntu --private-key ~/.ssh/id_ed25519 -e environment=test
+  -u ubuntu --private-key ~/.ssh/id_ed25519 -e app_environment=test
 
 # 4. Деплой в prod
 ansible-playbook -i "${PROD_IP}," ansible/playbook.yml \
-  -u ubuntu --private-key ~/.ssh/id_ed25519 -e environment=prod
+  -u ubuntu --private-key ~/.ssh/id_ed25519 -e app_environment=prod
 ```
 
 ### Результат
@@ -369,9 +393,11 @@ terraform workspace new test
 terraform apply -var-file="secrets.tfvars" -var-file="test.tfvars"
 
 # Деплой приложения
+terraform workspace show  # проверить: test
+terraform output external_ip
 TEST_IP=$(terraform output -raw external_ip)
 ansible-playbook -i "${TEST_IP}," ansible/playbook.yml \
-  -u ubuntu -e environment=test
+  -u ubuntu --private-key ~/.ssh/id_ed25519 -e app_environment=test
 
 # Проверка
 open http://${TEST_IP}:5000

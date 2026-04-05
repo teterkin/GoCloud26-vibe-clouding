@@ -21,3 +21,6 @@ secrets.tfvars
 # OS
 .DS_Store
 Thumbs.db
+
+# Ansible inventory (личные IP)
+ansible/inventory.ini

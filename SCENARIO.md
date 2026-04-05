@@ -172,49 +172,39 @@ git checkout -b feature/change-test-colors
 # git checkout feature/change-test-colors
 ```
 
-**Шаг 3: Меняем цвет в HTML-файлах**
+**Шаг 3: Меняем цвет в CSS-файле**
 
-Цвета задаются в CSS переменных в каждом шаблоне. Основные файлы:
-- `quiz-app/templates/index.html` — главная страница
-- `quiz-app/templates/quiz.html` — страница вопроса
-- `quiz-app/templates/answer.html` — результат ответа
-- `quiz-app/templates/result.html` — итоговый результат
+Основной CSS файл: `quiz-app/static/style.css`
 
-В каждом файле есть блок `.env-badge` с цветами:
-```css
-{% if app_env == 'prod' %}
-background: #B91C1C;  /* красный для PROD */
-color: #FFFFFF;
-{% else %}
-background: #1D4ED8;  /* синий для TEST */
-color: #FFFFFF;
-{% endif %}
-```
+В нём задаются градиенты для:
+- `body` — фон страницы
+- `.btn` — кнопки
+- `.progress-bar` — прогресс-бар
+- `.score-circle` — круг результатов
 
-Также градиент body можно изменить:
+Примеры градиентов:
 - Зелёный: `#11998e → #38ef7d`
 - Фиолетовый: `#667eea → #764ba2`
-- Тёмно-красный: `#1a1a2e → #16213e`
+- Синий: `#1D4ED8 → #3B82F6`
+- Красный: `#B91C1C → #DC2626`
 
 ```bash
-# Пример: меняем на фиолетовый
-vim quiz-app/templates/index.html
+vim quiz-app/static/style.css
 # Найти: background: linear-gradient(135deg, #11998e
 # Заменить на: background: linear-gradient(135deg, #667eea
 ```
 
 **Шаг 4: Смотрим diff — видим что изменилось**
 ```bash
-# Показать изменения в файлах
 git diff
 
 # Показать изменения конкретного файла
-git diff quiz-app/templates/index.html
+git diff quiz-app/static/style.css
 ```
 
 **Шаг 5: Коммитим изменения**
 ```bash
-git add quiz-app/templates/
+git add quiz-app/
 git commit -m "Change test colors to purple"
 ```
 

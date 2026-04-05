@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ответ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         .env-badge {
             position: fixed;
             top: 20px;
@@ -24,68 +24,6 @@
             background: #1D4ED8;
             color: #FFFFFF;
             {% endif %}
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 700px;
-            width: 100%;
-        }
-        .result {
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .result.correct {
-            background: #d4edda;
-            border: 2px solid #28a745;
-        }
-        .result.incorrect {
-            background: #f8d7da;
-            border: 2px solid #dc3545;
-        }
-        .result-icon {
-            font-size: 50px;
-            margin-bottom: 10px;
-        }
-        .result-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .correct .result-title { color: #28a745; }
-        .incorrect .result-title { color: #dc3545; }
-        .explanation {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .explanation h4 { color: #333; margin-bottom: 10px; }
-        .explanation p { color: #666; line-height: 1.6; }
-        .btn {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1em;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
         }
     </style>
 </head>

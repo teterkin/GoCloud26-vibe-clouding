@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Квиз: Облачные вычисления по NIST</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         .env-badge {
             position: fixed;
             top: 20px;
@@ -29,53 +25,7 @@
             color: #FFFFFF;
             {% endif %}
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 2em;
-        }
-        p {
-            color: #666;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        .cloud-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-        .btn {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
         .btn:hover {
-            transform: translateY(-2px);
             {% if app_env == 'prod' %}
             box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
             {% else %}
@@ -86,7 +36,7 @@
 </head>
 <body>
     <div class="env-badge">{{ app_env|upper }}</div>
-    <div class="container">
+    <div class="container container-center">
         <div class="cloud-icon">☁️</div>
         <h1>Квиз: Облачные вычисления</h1>
         <p>Проверьте свои знания основных понятий облачных вычислений по определениям NIST (National Institute of Standards and Technology).</p>

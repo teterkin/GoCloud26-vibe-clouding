@@ -65,6 +65,23 @@
         mode: '0644'
       ignore_errors: yes
 
+    - name: Create static directory
+      file:
+        path: "{{ app_dir }}/static"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+
+    - name: Upload static files
+      copy:
+        src: ../quiz-app/static/
+        dest: "{{ app_dir }}/static/"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0644'
+      ignore_errors: yes
+
     - name: Create systemd service
       copy:
         dest: /etc/systemd/system/quiz-app.service

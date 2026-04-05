@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import random
-
 import os
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('APP_SECRET_KEY', 'cloud-computing-quiz-2024')
 
-# Environment: test/prod - affects colors
+app.config['STATIC_FOLDER'] = 'static'
+
 app_env = os.environ.get('APP_ENV', 'test')
 
 QUESTIONS = [

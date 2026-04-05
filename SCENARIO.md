@@ -101,6 +101,30 @@ terraform workspace select test  # переключиться на test
 terraform workspace select prod # переключиться на prod
 ```
 
+### Деплой приложения
+
+> **⚠️ ВАЖНО:** После создания ВМ Ubuntu выполняет полное обновление дистрибутива. Это занимает **3-5 минут**! Прежде чем подключаться по SSH и устанавливать пакеты через Ansible, обязательно дождитесь завершения обновления.
+
+```bash
+# Получаем IP test VM
+terraform workspace select test
+TEST_IP=$(terraform output -raw external_ip)
+
+# Деплой в test
+ansible-playbook -i "${TEST_IP}," ansible/playbook.yml \
+  -u ubuntu --private-key ~/.ssh/id_ed25519 \
+  -e app_environment=test
+
+# Получаем IP prod VM
+terraform workspace select prod
+PROD_IP=$(terraform output -raw external_ip)
+
+# Деплой в prod
+ansible-playbook -i "${PROD_IP}," ansible/playbook.yml \
+  -u ubuntu --private-key ~/.ssh/id_ed25519 \
+  -e app_environment=prod
+```
+
 ### Результат
 
 - **test**: `test-quiz-vm` — 1 CPU, 1 GB RAM
@@ -140,8 +164,8 @@ terraform workspace select prod # переключиться на prod
 ### Как открыть приложение
 
 После деплоя откройте в браузере:
-- **test**: `http://<TEST_VM_IP>:5000`
-- **prod**: `http://<PROD_VM_IP>:5000`
+- **test**: `http://<TEST_VM_IP>:5000` — зелёный квиз
+- **prod**: `http://<PROD_VM_IP>:5000` — зелёный квиз (пока цвета одинаковые)
 
 IP ВМ можно получить:
 ```bash
@@ -176,22 +200,16 @@ git checkout -b feature/change-test-colors
 
 Основной CSS файл: `quiz-app/static/style.css`
 
-В нём задаются градиенты для:
-- `body` — фон страницы
-- `.btn` — кнопки
-- `.progress-bar` — прогресс-бар
-- `.score-circle` — круг результатов
+Сейчас цвета зелёные: `#11998e → #38ef7d`
 
-Примеры градиентов:
-- Зелёный: `#11998e → #38ef7d`
-- Фиолетовый: `#667eea → #764ba2`
-- Синий: `#1D4ED8 → #3B82F6`
-- Красный: `#B91C1C → #DC2626`
+Поменяйте 2 цвета зелёного градиента на 2 цвета фиолетового:
+- Было: `#11998e → #38ef7d`
+- Стало: `#667eea → #764ba2`
 
 ```bash
 vim quiz-app/static/style.css
-# Найти: background: linear-gradient(135deg, #11998e
-# Заменить на: background: linear-gradient(135deg, #667eea
+# Замените #11998e на #667eea
+# Замените #38ef7d на #764ba2
 ```
 
 **Шаг 4: Смотрим diff — видим что изменилось**
@@ -209,12 +227,17 @@ git commit -m "Change test colors to purple"
 ```
 
 **Шаг 6: Деплоим только в test (prod не трогаем)**
+
+> **⚠️ ВАЖНО:** После создания ВМ Ubuntu выполняет полное обновление дистрибутива. Это занимает **3-5 минут**! Прежде чем подключаться по SSH и устанавливать пакеты через Ansible, обязательно дождитесь завершения обновления.
+
 ```bash
-# Важно: сначала проверим текущий workspace!
-terraform workspace show
+# Получаем IP test VM
+terraform workspace select test
+TEST_VM_IP=$(terraform output -raw external_ip)
+echo $TEST_VM_IP
 
 # Деплоим в test
-ansible-playbook -i "TEST_VM_IP," ansible/playbook.yml \
+ansible-playbook -i "${TEST_VM_IP}," ansible/playbook.yml \
   -u ubuntu --private-key ~/.ssh/id_ed25519 \
   -e app_environment=test
 ```
@@ -227,48 +250,27 @@ ansible-playbook -i "TEST_VM_IP," ansible/playbook.yml \
 
 ### Как это работает
 
-1. **Ansible получает environment** из переменной
-2. **Flask-приложение** читает `APP_ENV` 
-3. **Шаблоны Jinja2** рендерят разные цвета
+Цвета приложения задаются в двух местах:
 
-### Демонстрация
+1. **В CSS файле (`quiz-app/static/style.css`)** — общие стили для всех окружений:
+   - Градиент фона `body`
+   - Градиент кнопок `.btn`
+   - Градиент прогресс-бара `.progress-bar`
+   - Градиент круга результатов `.score-circle`
+   
+   Это статические цвета — одинаковые для test и prod.
 
-Ведущий показывает:
-1. Открыть test ВМ в браузере — фиолетовые цвета
-2. Открыть prod ВМ в браузере — тёмно-красные цвета
-3. Показать разницу визуально
+2. **В HTML шаблонах** — цвета badge с надписью TEST/PROD:
+   - TEST: синий фон (#1D4ED8), белый текст
+   - PROD: красный фон (#B91C1C), белый текст
+   
+   Эти цвета динамические — определяются переменной `app_env` через Jinja2.
 
-### Команды для деплоя
-
-> **⚠️ ВАЖНО:** После создания ВМ Ubuntu выполняет полное обновление дистрибутива. Это занимает **3-5 минут**! Прежде чем подключаться по SSH и устанавливать пакеты через Ansible, обязательно дождитесь завершения обновления. Иначе `apt-get` заблокирует установку пакетов с ошибкой "dpkg lock".
-
-```bash
-# Деплой в test
-ansible-playbook -i "<TEST_VM_IP>," ansible/playbook.yml \
-  -u ubuntu --private-key ~/.ssh/id_ed25519 \
-  -e app_environment=test
-
-# Деплой в prod  
-ansible-playbook -i "<PROD_VM_IP>," ansible/playbook.yml \
-  -u ubuntu --private-key ~/.ssh/id_ed25519 \
-  -e app_environment=prod
-```
-
-### Демонстрация GitOps: изменение test без prod
-
-Покажем главное преимущество GitOps — **изолированные изменения**:
-
-1. Меняем код приложения (например, добавляем новый вопрос в квиз)
-2. Деплоим **только в test**:
-   ```bash
-   ansible-playbook -i "<TEST_VM_IP>," ansible/playbook.yml \
-     -u ubuntu --private-key ~/.ssh/id_ed25519 \
-     -e app_environment=test
-   ```
-3. Проверяем — test обновился, prod остался прежним
-4. Убеждаемся: открываем оба URL — изменения только в test
-
-Это ключевой момент: мы можем безопасно экспериментировать в test, не затрагивая prod.
+**Workflow:**
+1. Ansible получает `app_environment` из переменной
+2. Передаёт в Flask через переменную окружения `APP_ENV`
+3. Flask рендерит шаблоны с `app_env` → badge показывает TEST или PROD
+4. CSS стили применяются ко всем окружениям одинаково (пока не изменить)
 
 ---
 

@@ -148,7 +148,7 @@ ansible-playbook -i "${PROD_IP}," ansible/playbook.yml \
 #### Workflow:
 
 ```
-1. Создаём branch    → feature/add-colors
+1. Создаём branch    → feature/change-test-colors
 2. Изменяем код      → ansible playbook
 3. Git commit + push → Review в PR
 4. Merge             → CI/CD деплоит в prod

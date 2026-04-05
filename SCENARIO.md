@@ -335,7 +335,7 @@ ansible-playbook -i "${TEST_VM_IP}," ansible/playbook.yml \
 git clone <REPO_URL>
 cd <REPO_NAME>
 cp secrets.tfvars.example secrets.tfvars
-# 编辑 secrets.tfvars: project_id, auth_key_id, auth_secret
+# Редактирование secrets.tfvars: project_id, auth_key_id, auth_secret
 
 # 2. Terraform
 terraform init

@@ -367,9 +367,3 @@ open http://${TEST_IP}:5000
 | Приложение не запускается | Проверьте логи: `journalctl -u quiz-app -n 50` |
 | Цвета не меняются | Проверьте APP_ENV: `echo $APP_ENV` |
 | Не работает деплой | Проверьте переменную app_environment: `ansible ... -e app_environment=test` |
-
-### D. Контакты
-
-- Cloud.ru: https://console.cloud.ru
-- Terraform: https://developer.hashicorp.com/terraform
-- Ansible: https://docs.ansible.com

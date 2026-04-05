@@ -41,9 +41,7 @@
    - test.tfvars: flavor = "gen-1-1", vm_name = "quiz-test"
    - prod.tfvars: flavor = "gen-1-1", vm_name = "quiz-prod"
 3. Используй имена ресурсов с префиксом environment: "${var.environment}-quiz-vm"
-4. Настрой разные зоны доступности:
-   - test: ru.AZ-1
-   - prod: ru.AZ-2
+4. Настрой зону доступности: ru.AZ-1 (одна зона для обоих окружений)
 5. Добавь remote backend для хранения state в S3 (или оставь локальным для workshop)
 
 Выведи: external_ip, vm_name, environment, zone

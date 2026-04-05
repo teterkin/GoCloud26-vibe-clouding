@@ -368,19 +368,6 @@ open http://${TEST_IP}:5000
 | Цвета не меняются | Проверьте APP_ENV: `echo $APP_ENV` |
 | Не работает деплой | Проверьте переменную app_environment: `ansible ... -e app_environment=test` |
 
-### C. Различия test и prod
-
-```
-TEST:
-- Фиолетовый gradient: #667eea → #764ba2  
-- Light mode стиль
-
-PROD:  
-- Тёмный gradient: #1a1a2e → #16213e
-- Красные акценты: #e94560
-- Dark mode стиль
-```
-
 ### D. Контакты
 
 - Cloud.ru: https://console.cloud.ru

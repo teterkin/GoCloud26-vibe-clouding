@@ -1,40 +1,43 @@
 #!/bin/bash
-# Создаёт inventory.ini из terraform output
+# Создаёт inventory.ini для обоих окружений (test и prod)
 
 set -e
 
 echo "=== Генерация inventory.ini ==="
 
-# Проверяем workspace
-WORKSPACE=$(terraform workspace show)
-echo "Текущий workspace: $WORKSPACE"
-
-# Получаем IP
-VM_IP=$(terraform output -raw external_ip)
-echo "IP ВМ: $VM_IP"
-
 # SSH ключ (по умолчанию или из параметра)
 SSH_KEY="${1:-~/.ssh/id_ed25519}"
 
-# Определяем окружение по workspace
-if [ "$WORKSPACE" = "test" ]; then
-    ENV_NAME="test"
-elif [ "$WORKSPACE" = "prod" ]; then
-    ENV_NAME="prod"
-else
-    echo "Ошибка: неизвестный workspace $WORKSPACE"
-    exit 1
-fi
+# Сохраняем текущий workspace
+ORIGINAL_WORKSPACE=$(terraform workspace show)
+echo "Исходный workspace: $ORIGINAL_WORKSPACE"
+
+# Получаем IP test VM
+terraform workspace select test > /dev/null 2>&1
+TEST_IP=$(terraform output -raw external_ip)
+echo "test IP: $TEST_IP"
+
+# Получаем IP prod VM
+terraform workspace select prod > /dev/null 2>&1
+PROD_IP=$(terraform output -raw external_ip)
+echo "prod IP: $PROD_IP"
+
+# Возвращаемся в исходный workspace
+terraform workspace select "$ORIGINAL_WORKSPACE" > /dev/null 2>&1
 
 # Создаём inventory.ini
 cat > ansible/inventory.ini << EOF
-[${ENV_NAME}]
-${ENV_NAME} ansible_host=${VM_IP} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY}
+[test]
+test ansible_host=${TEST_IP} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY}
+
+[prod]
+prod ansible_host=${PROD_IP} ansible_user=ubuntu ansible_ssh_private_key_file=${SSH_KEY}
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 EOF
 
+echo ""
 echo "Создан файл ansible/inventory.ini"
 echo ""
 echo "Содержимое:"

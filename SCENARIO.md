@@ -366,7 +366,7 @@ open http://${TEST_IP}:5000
 | Ansible не работает | Проверьте доступ по ключу: `ssh -i ~/.ssh/id_ed25519 ubuntu@IP` |
 | Приложение не запускается | Проверьте логи: `journalctl -u quiz-app -n 50` |
 | Цвета не меняются | Проверьте APP_ENV: `echo $APP_ENV` |
-| Не работает деплой | Проверьте переменную environment: `ansible ... -e environment=test` |
+| Не работает деплой | Проверьте переменную app_environment: `ansible ... -e app_environment=test` |
 
 ### C. Различия test и prod
 
